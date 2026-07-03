@@ -18,22 +18,27 @@ Then I started peeling layers off.
 
 ## The results
 
-| Strategy | Indicators | Exit type | Trades | Win rate | Profit |
-|----------|:---:|------|------:|------:|------:|
-| ADXMomentumFixed | ADX+DI+MOM | Trailing stop | 7,123 | 74.6% | **-$4,518** |
-| ADXMomentumFixed_FixedRR | ADX+DI+MOM | Fixed 1:1 | 12,944 | 52.6% | +$2,040 |
-| SingleB | MOM only | Trailing stop | 22,146 | 66.3% | +$5,635 |
-| **SingleB_FixedRR** | **MOM only** | **Fixed 1:1** | **14,008** | **55.6%** | **+$8,814** |
+All strategies start with $5,000. Backtest period: January 2024 – July 2026, OKX perpetual futures, 5-minute candles, 10 coins. For reference, Bitcoin went from $42,298 to $61,950 in this period — a 46.5% gain. Buying and holding BTC would have turned $5,000 into $7,323.
+
+| Strategy | Indicators | Exit type | Leverage | Trades | Win rate | Profit |
+|----------|:---:|------|:---:|------:|------:|------:|
+| ADXMomentumFixed | ADX+DI+MOM | Trailing stop | 5× | 7,123 | 74.6% | **-$4,518** |
+| ADXMomentumFixed_FixedRR | ADX+DI+MOM | Fixed 1:1 | 5× | 1,292 | 36.9% | **-$4,495** |
+| SingleB | MOM only | Trailing stop | 1× | 22,146 | 66.3% | +$5,635 |
+| **SingleB_FixedRR** | **MOM only** | **Fixed 1:1** | **1×** | **14,008** | **55.6%** | **+$8,814** |
+| *BTC buy-and-hold* | *—* | *—* | *—* | *—* | *—* | *+$2,323* |
 
 Some things that surprised me:
 
-- **The highest win rate strategy (74.6%) was the only one that lost money.** Its trailing stop was too tight — 0.1% offset on 5-minute candles basically means you exit at the first tick of noise before any trend can develop.
+- **The trailing stop inflated ADXMomentumFixed's win rate from 36.9% to 74.6%.** That's not an edge — that's a 38 percentage point artifact. With the same entries and a fixed 1:1 exit, the true accuracy is worse than a coin flip. The trailing stop converts losers into "small wins" by exiting at the first micro-bounce before the stop loss is hit, then counts them as wins in the stats. At 5× leverage, this effect is amplified because small price moves equal large PnL swings.
 
-- **Fewer indicators made more money.** The 3-indicator version (ADXMomentumFixed) was the worst performer. Stripping it down to just MOM improved results across the board.
+- **At 5× leverage, both ADXMomentumFixed variants lost nearly everything.** The trailing version lost 90% of the account. The fixed version lost 90% of the account. The entry signal simply has no edge at this timeframe and distance, and leverage magnifies the noise.
 
-- **The fixed 1:1 exit beat the trailing stop in both comparisons.** I thought trailing stops were supposed to let winners run. In this market regime (a pretty strong bull run), they did the opposite — they cut winners short and let the commission stack up.
+- **Fewer indicators did better.** The 3-indicator version was the worst. SingleB (MOM only) improved results. But it's worth noting: the ADX versions used 5× leverage and SingleB used 1×, so the comparison across families isn't apples-to-apples on PnL. The levered versions got destroyed; the unlevered versions survived.
 
-- **The simplest strategy won.** SingleB_FixedRR: one indicator, fixed stop and target, no leverage tricks. $8,814 profit. Not life-changing, but it was profitable across 14,000+ trades.
+- **Fixed 1:1 beat trailing in both families.** ADXMomentumFixed_FixedRR (-$4,495) was marginally less bad than ADXMomentumFixed (-$4,518), and SingleB_FixedRR (+$8,814) beat SingleB (+$5,635). The trailing stop was cutting winners short, not protecting profits.
+
+- **BTC buy-and-hold returned +46.5%.** SingleB_FixedRR's +176% beat it, but the gap is smaller than it looks when you account for the 14,008 trades' worth of fees and the concentration risk of being in 10 altcoins vs one Bitcoin.
 
 ---
 
@@ -66,11 +71,11 @@ I'm not saying these are universal truths. This is one experiment, one market re
 
 1. **Test your indicators for collinearity before trusting them.** If two indicators share the same underlying formula (like ADX and DI both come from directional movement), they're not two independent signals. They're one signal with different wrappers.
 
-2. **Test your entry signal with a fixed 1:1 exit first.** Before any trailing stop, any optimization, anything clever — just use a fixed 1.5% stop and 1.5% target. This tells you whether your entries have any edge at all. If win rate is below 50% with fixed exits, your entry signal isn't doing anything useful.
+2. **Test your entry signal with a fixed 1:1 exit first.** Before any trailing stop, any optimization, anything clever — just use a fixed 1.5% stop and 1.5% target. ADXMomentumFixed's true accuracy went from 74.6% to 36.9% when I did this. A 36.9% win rate with 1:1 risk/reward is a negative-expectancy game — you lose 1.5% 63% of the time and gain 1.5% 37% of the time. The math doesn't work, and no exit optimization can fix an entry signal that's worse than random.
 
 3. **More complexity makes things worse more often than it makes them better.** The 3-indicator strategy was the worst. The 1-indicator strategy was the best. This doesn't mean simple is always better — it means you should have to prove that each added indicator helps, not just assume it does.
 
-4. **Win rate alone is meaningless.** The highest win rate lost money because the wins were tiny ($3 average) and the losses were huge ($27 average). You can have a 90% win rate and go broke if your risk/reward is bad enough.
+4. **Win rate alone is meaningless, especially with leverage.** ADXMomentumFixed showed 74.6% WR but lost 90% of the account. At 5× leverage, the trailing stop's micro-wins ($3 average) couldn't offset the occasional full-stop-loss disaster ($27 average). You can have a high win rate and still get wiped out.
 
 5. **Trailing stops need room to breathe.** If your trailing offset is smaller than normal price noise on your timeframe, you're not managing risk. You're just exiting randomly.
 
@@ -80,11 +85,11 @@ I'm not saying these are universal truths. This is one experiment, one market re
 
 ## Limitations
 
-- Only tested on crypto, only on OKX, only 5-minute timeframe, only 2024-2026 (which was a bull run)
+- Only tested on crypto, only on OKX, only 5-minute timeframe, only January 2024 – July 2026 (which included a strong bull run — BTC went from $42K to $62K, +46.5%)
 - 4 strategies isn't a lot. I started with more but these were the only ones worth writing about
 - Fees are included (OKX standard 0.05% taker) but real slippage might be higher
-- The ADXMomentumFixed versions use 5x leverage, SingleB versions use 1x — so the absolute PnL numbers aren't directly comparable across families
-- No buy-and-hold comparison. In this period, BTC alone went up ~300%. $8,814 on a $5,000 starting balance is about +176%, which is good but not amazing relative to the market
+- ADXMomentumFixed uses 5× leverage; SingleB uses 1× leverage. The ADX versions' extreme losses are partly a leverage story, not just an exit-logic story. A fair comparison across families would require running all four strategies at both leverage levels
+- BTC buy-and-hold is now included as a baseline. But BTC ≠ a basket of 10 altcoins — the risk profiles are completely different
 
 ---
 

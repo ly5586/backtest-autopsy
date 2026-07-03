@@ -41,7 +41,7 @@ plt.rcParams.update(STYLE)
 # --- Real backtest results (2024-2026, 5m, OKX futures) ---
 REAL_RESULTS = {
     "ADXMomentumFixed": {
-        "label": "3 Indicators\n+ Trailing",
+        "label": "3 Indicators\n+ Trailing (5×)",
         "trades": 7123,
         "win_rate": 74.6,
         "profit": -4518,
@@ -49,15 +49,15 @@ REAL_RESULTS = {
         "group": "Complex",
     },
     "ADXMomentumFixed_FixedRR": {
-        "label": "3 Indicators\n+ Fixed 1:1",
-        "trades": 12944,
-        "win_rate": 52.6,
-        "profit": 2040,
+        "label": "3 Indicators\n+ Fixed 1:1 (5×)",
+        "trades": 1292,
+        "win_rate": 36.9,
+        "profit": -4495,
         "color": "#f0883e",
         "group": "Complex",
     },
     "SingleB": {
-        "label": "1 Indicator\n+ Trailing",
+        "label": "1 Indicator\n+ Trailing (1×)",
         "trades": 22146,
         "win_rate": 66.3,
         "profit": 5635,
@@ -65,7 +65,7 @@ REAL_RESULTS = {
         "group": "Simple",
     },
     "SingleB_FixedRR": {
-        "label": "1 Indicator\n+ Fixed 1:1",
+        "label": "1 Indicator\n+ Fixed 1:1 (1×)",
         "trades": 14008,
         "win_rate": 55.6,
         "profit": 8814,
