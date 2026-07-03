@@ -93,7 +93,7 @@ I'm not saying these are universal truths. This is one experiment, one market re
 If you already have Freqtrade set up:
 
 ```bash
-git clone https://github.com/liu57liu456/backtest-autopsy.git
+git clone https://github.com/ly5586/backtest-autopsy.git
 cd backtest-autopsy
 pip install -r requirements.txt
 
