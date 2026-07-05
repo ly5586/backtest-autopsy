@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+dist/
+build/
+.env
+.venv/
+venv/
+user_data/backtest_results/
+user_data/logs/
+user_data/hyperopt_results/
+user_data/data/
+*.log
+.DS_Store
+Thumbs.db
+
+# WARNING: If you add real API keys to config.json,
+# run: git update-index --assume-unchanged config.json
+# to prevent accidental commits of live credentials.
