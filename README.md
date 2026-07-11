@@ -149,3 +149,7 @@ MIT
 ---
 
 Not financial advice. This is a postmortem of strategies that didn't work the way I expected. Backtest results don't guarantee anything about future performance. Trading involves risk of losing money.
+
+---
+
+*Last updated: 2026-07-11*
